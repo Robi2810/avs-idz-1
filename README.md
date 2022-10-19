@@ -27,28 +27,29 @@ make run или ./main <input_file> <output_file>
 2. Время работы программ
  - На тесте в 100000 элементов:
  ```
- asm:										c:
+ asm:							c:
+ ----------------------------------------
  Read: 										
  Calculations:
  Write:
  ```
   - На тесте в 1000000 элементов:
  ```
- asm:										c:
+ asm:							c:
  Read: 
  Calculations:
  Write:
  ```
   - На тесте в 10000000 элементов:
  ```
- asm:										c:
+ asm:							c:
  Read: 
  Calculations:
  Write:
  ```
   - На тесте в 100000000 элементов:
  ```
- asm:										c:
+ asm:							c:
  Read: 
  Calculations:
  Write:
