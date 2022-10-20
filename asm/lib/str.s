@@ -3,6 +3,7 @@
     .global string_to_num
     .global length_string
     .global number_to_string
+    .global compare_strings
 
 # input: rax - string 
 # output: rax - number
@@ -53,6 +54,47 @@ string_to_num:
             pop rcx
             pop rbx
             ret
+
+
+# input: rax - first string
+# input: rbx - second string
+# output: rax: 1 if equal 0 if not
+compare_strings:
+    push rcx
+    push rdx
+    push rsi
+    mov rsi, rax
+    call length_string  # get length of first string
+    mov r8, rax         # save value into r8
+    mov rax, rbx       
+    call length_string  # get length of second string
+    mov r9, rax         # save value into r9
+    cmp r8, r9
+    jne .scmp_false
+    xor rdx, rdx        # counter
+    .scmp_loop:
+        cmp rdx, r8
+        jge .scmp_true
+        mov al, byte ptr [rsi + rdx] # get string1[counter]
+        mov cl, byte ptr [rbx + rdx] # get string2[counter]
+        cmp al, cl
+        jne .scmp_false
+        inc rdx
+        jmp .scmp_loop
+
+    .scmp_true:
+        mov rax, 1
+        jmp .scmp_ret
+
+    .scmp_false:
+        xor rax, rax
+        jmp .scmp_ret
+
+    .scmp_ret:
+        pop rsi
+        pop rdx
+        pop rcx
+        ret
 
 # input: rax - string
 # output: rax - length

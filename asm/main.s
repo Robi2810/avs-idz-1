@@ -36,21 +36,31 @@ msg_time_calc:
     .string "Calculations:  "
 msg_time_write:
     .string "Write:         "
+flag_random:
+    .string "-r"
 
 _start:
     mov rax, [rsp]
     cmp rax, 3                          # check number of args
     jl .manual_input                    # if < 3 goto manual input mode, else read from file
+                                        # else check for 'random flag'
 
-    mov rax, [rsp + 16]                 # store in rax filename input
+    mov rax, 16[rsp]
+    mov rbx, offset flag_random
+    call compare_strings
+    cmp rax, 1
+    je .random_input
+    
+
+    mov rax, 16[rsp]                    # store in rax filename input
     mov rbx, 0                          # 0 - read
     call file_open
 
-    push rax                            # save output file name
-    mov rax, [rsp + 32]
+    mov rcx, rax                        # save output file name
+    mov rax, 24[rsp]
     mov rbx, offset _out_fname
     mov [rbx], rax
-    pop rax                         
+    mov rax, rcx                       
 
     cmp rax, -1                         # if error
     jg .file_rd_st
@@ -123,6 +133,74 @@ _start:
 
         mov r13, 1                      # 1 = file mode
         jmp .calc_section
+
+
+    .random_input:
+        debug:
+        mov rax, 24[rsp]
+        call string_to_num
+        mov r12, rax
+        cmp r12, 100000000              # if array length is too big
+        jg .len_to_big
+
+        mov rax, 32[rsp]             # lower bound
+        call string_to_num
+        mov rsi, rax
+
+        mov rax, 40[rsp]             # upper bound
+        call string_to_num
+        mov rdi, rax
+
+
+        mov rax, 48[rsp]
+        mov rbx, offset _out_fname      # output filename
+        mov [rbx], rax        
+
+        push rsi
+        push rdi
+    
+        mov r13, r12
+        imul r13, 8                     # memory = 8bytes (long) * length
+
+        mov rax, r13
+        call create_array               # create array A
+        mov r14, rdi                    # r14 = arrA[0]
+
+        mov rax, r13
+        call create_array               # create array B
+        mov r15, rdi                    # r15 = arrB[0]
+
+        mov rax, r13
+        call create_array               # without it, it just does not work idk why
+
+        pop rdi
+        pop rsi
+
+        xor rcx, rcx
+        .rand_read_loop:
+            cmp rcx, r12
+            jge .rand_read_loop_ret
+            
+            mov rax, rsi
+            mov rbx, rdi
+            push rsi
+            push rdi
+            call get_random_number
+            mov [r14 + rcx * 8], rax
+            call print_number
+            mov rax, ' '
+            call print_char
+            
+            pop rdi
+            pop rsi
+            inc rcx
+            jmp .rand_read_loop
+
+        .rand_read_loop_ret:
+        call print_line
+        mov r13, 1
+        jmp .calc_section
+
 
     .manual_input:
     mov rax, offset msg_enter_len
@@ -261,7 +339,6 @@ _start:
     call time_now
     # print measured time
     # for read
-    debug:
     mov rax, ReadStartTime[rip]
     mov rbx, ReadStartTime[rip + 8]
     mov rcx, ReadEndTime[rip]
