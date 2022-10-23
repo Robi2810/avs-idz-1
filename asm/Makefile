@@ -2,11 +2,11 @@ LIBS = lib/io.o lib/str.o lib/array.o lib/time.o lib/rand.o
 .PHONY: default compile build dump hex run debug test
 default: build run
 compile: lib/io.s
-	as --gstabs lib/io.s -o lib/io.o
-	as --gstabs lib/str.s -o lib/str.o
-	as --gstabs lib/array.s -o lib/array.o
-	as --gstabs lib/time.s -o lib/time.o
-	as --gstabs lib/rand.s -o lib/rand.o
+	as lib/io.s -o lib/io.o
+	as lib/str.s -o lib/str.o
+	as lib/array.s -o lib/array.o
+	as lib/time.s -o lib/time.o
+	as lib/rand.s -o lib/rand.o
 build: main.s
 	as main.s -o main.o
 	ld main.o $(LIBS) -o main
