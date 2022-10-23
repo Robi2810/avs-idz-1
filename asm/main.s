@@ -46,7 +46,7 @@ _start:
                                         # else check for 'random flag'
 
     mov rax, 16[rsp]
-    mov rbx, offset flag_random
+    mov rbx, offset flag_random         # check for flag 
     call compare_strings
     cmp rax, 1
     je .random_input
@@ -143,11 +143,11 @@ _start:
         cmp r12, 100000000              # if array length is too big
         jg .len_to_big
 
-        mov rax, 32[rsp]             # lower bound
+        mov rax, 32[rsp]                # lower bound
         call string_to_num
         mov rsi, rax
 
-        mov rax, 40[rsp]             # upper bound
+        mov rax, 40[rsp]                # upper bound
         call string_to_num
         mov rdi, rax
 
@@ -242,7 +242,7 @@ _start:
     lea rax, CalcStartTime[rip]         # get time before calculations
     call time_now
 
-    mov rcx, -1
+    mov rcx, -1                         # loop to find first even negative
     xor rbx, rbx
     .arr_lp_fnd_neg_it:
         cmp rbx, r12
@@ -281,7 +281,7 @@ _start:
     .arr_lp_calc_ex:
     
 
-    lea rax, CalcEndTime[rip]                # get time after calculations
+    lea rax, CalcEndTime[rip]           # get time after calculations
     call time_now
 
 
