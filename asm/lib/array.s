@@ -20,7 +20,7 @@ create_array:
     syscall
 
     cmp rax, 0
-    jl .malloc_err                         # if error - exit
+    jl .malloc_err                  # if error - exit
     mov rcx, rdx
     lea rdi, [rcx + rax]            # new momory addr now stored in rdi
     mov rax, 12                     # sys_brk
