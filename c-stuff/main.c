@@ -19,7 +19,16 @@ int main(int argc, char** argv) {
 	start_read = clock();
 	if (strcmp(argv[1], "-r")) {
 		fp = fopen(argv[1], "r");
+		if (fp == NULL) {
+			printf("Wrong fname\n");
+			return 0;
+		}
 		fscanf(fp, "%llu", &n);
+		if (n > 100000000) {
+			printf("Length is greater than 100000000!\n");
+			fclose(fp);
+			return 0;
+		}
 		arr = (int*)malloc(sizeof(int)*n);
 		for (ulli i = 0; i < n; ++i) {
 			fscanf(fp, "%d", &arr[i]);
@@ -28,6 +37,10 @@ int main(int argc, char** argv) {
 		fclose(fp);
 	} else {
 		n = atoll(argv[2]);
+		if (n > 100000000) {
+			printf("Length is greater than 100000000!\n");
+			return 0;
+		}
 		int lower_bound = atoi(argv[3]);
 		int upper_bound = atoi(argv[4]);
 		idx = 5;
